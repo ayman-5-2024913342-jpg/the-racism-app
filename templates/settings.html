@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-intro section-shell">
+  <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR DATA</div>
+  <h1>Settings &amp; <em>privacy.</em></h1>
+  <p>You are in control of what is kept. There are no accounts; these choices belong to this browser.</p>
+</section>
+<section class="section-shell settings-grid">
+  <div class="card">
+    <h2>Preferences</h2>
+    <form hx-post="/settings" hx-target="#settings-flash" hx-swap="innerHTML">
+      <label class="check-row"><input type="checkbox" name="save_by_default" {% if save_default %}checked{% endif %}><span><b>Save new results automatically</b><small>Saved results are public: anyone can view them with the name you enter. Otherwise results stay private and are deleted {{ ttl_hours }} hours after analysis.</small></span></label>
+      <label class="check-row"><input type="checkbox" name="share_by_default" {% if share_default %}checked{% endif %}><span><b>Contribute saved results to the anonymous distribution</b><small>Off by default. Only the lightness (L*) number is shared, never the photo or an identifier. It only applies to saved results.</small></span></label>
+      <div class="form-actions"><button class="button button-dark" type="submit">Save preferences</button></div>
+    </form>
+    <div id="settings-flash" role="status" aria-live="polite"></div>
+  </div>
+  <div class="card">
+    <h2>Your data</h2>
+    <p class="fine-print" style="margin-top:0">Withdrawing removes your numbers from the distribution immediately. Deleting everything removes all your saved and unsaved results and your preferences.</p>
+    <div class="action-bar">
+      <button class="button button-light" type="button" hx-post="/settings/withdraw-shared" hx-target="#settings-flash" hx-swap="innerHTML" hx-confirm="Withdraw all of your contributions from the distribution?">Withdraw my contributions</button>
+      <button class="button button-danger" type="button" hx-post="/settings/delete-all" hx-swap="none" hx-confirm="Permanently delete all of your results and preferences?">Delete all my data</button>
+    </div>
+  </div>
+</section>
+{% endblock %}

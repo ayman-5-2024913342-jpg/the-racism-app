@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf9f6">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="htmx-config" content='{"includeIndicatorStyles": false, "allowEval": false}'>
+  <meta name="description" content="A thoughtful, image-based guide to approximate skin tone and personal color discovery.">
+  <title>{{ title }} · THE RACISM APP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  {% if page == "analyze" %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+  {% endif %}
+</head>
+<body data-max-upload-mb="{{ max_upload_mb }}" hx-headers='{"X-CSRF-Token": "{{ csrf_token }}"}'>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="/" aria-label="THE RACISM APP home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>THE RACISM <b>APP</b></span>
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" type="button">Menu <span aria-hidden="true">☰</span></button>
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+        <a class="{% if page == 'home' %}active{% endif %}" href="/">Overview</a>
+        <a class="{% if page == 'analyze' %}active{% endif %}" href="/analyze">Analyze</a>
+        <a class="{% if page == 'distribution' %}active{% endif %}" href="/distribution">Color data</a>
+        <a class="{% if page == 'history' %}active{% endif %}" href="/history">Saved results</a>
+        <a class="{% if page == 'settings' %}active{% endif %}" href="/settings">Settings</a>
+      </nav>
+      <a class="nav-cta" href="/analyze">Start an analysis <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+  <div id="flash" class="flash-region" role="status" aria-live="polite"></div>
+  <main id="main">{% block content %}{% endblock %}</main>
+  <footer class="site-footer">
+    <div class="footer-main">
+      <a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><span>THE RACISM <b>APP</b></span></a>
+      <p>Color discovery, with a little more care.</p>
+      <div class="footer-links"><a href="/analyze">Analyze a photo</a><a href="/distribution">About the data</a><a href="/#privacy">Privacy</a><a href="/settings">Your data</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 THE RACISM APP</span><span>Estimates, not standards. Every complexion is valid.</span></div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
+  <script src="/static/js/app.js" defer></script>
+  {% if page == "analyze" %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" defer></script>
+  <script src="/static/js/analyze.js" defer></script>
+  {% endif %}
+</body>
+</html>

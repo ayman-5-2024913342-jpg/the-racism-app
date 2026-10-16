@@ -1,0 +1,26 @@
+<div class="action-bar">
+  {% if is_owner %}
+  {% if not r.saved %}
+  <button class="button button-dark" type="button" hx-post="/results/{{ r.id }}/save" hx-target="#result-actions" hx-swap="innerHTML">Save publicly</button>
+  {% else %}
+  <span class="badge">SAVED</span>
+  <button class="button button-light" type="button" hx-post="/results/{{ r.id }}/unsave" hx-target="#result-actions" hx-swap="innerHTML">Make private</button>
+  {% if r.shared %}
+  <button class="button button-light" type="button" hx-post="/results/{{ r.id }}/unshare" hx-target="#result-actions" hx-swap="innerHTML">Stop contributing</button>
+  {% else %}
+  <button class="button button-light" type="button" hx-post="/results/{{ r.id }}/share" hx-target="#result-actions" hx-swap="innerHTML">Contribute anonymously</button>
+  {% endif %}
+  {% endif %}
+  {% else %}
+  <span class="badge">PUBLIC</span>
+  {% endif %}
+  <a class="button button-light" href="/results/{{ r.id }}/export.json" download>Export JSON</a>
+  <a class="button button-light" href="/results/{{ r.id }}/palette.png" download>Download palette</a>
+  {% if is_owner %}<button class="button button-danger" type="button" hx-delete="/results/{{ r.id }}" hx-swap="none" hx-confirm="Delete this result permanently?">Delete</button>{% endif %}
+  <a class="button button-outline" href="/analyze">Analyze another photo <span>↗</span></a>
+</div>
+<p class="fine-print">
+  {% if not is_owner %}This is a saved result. Anyone can view it; only the browser that created it can delete it.
+  {% elif not r.saved %}This result is private and kept for {{ ttl_hours }} hours so you can reopen it, then deleted automatically. Saving makes it public (visible to everyone, with your name) and keeps it until you delete it.{% else %}Saved publicly: anyone can view this result and the name you entered. Only computed color values are stored, never the photo. Only this browser can delete it.{% endif %}
+  {% if is_owner and r.shared %}<br><b>Contributing:</b> only the lightness (L*) number of this patch is added to an anonymous chart. No photo, no ID, no date.{% elif is_owner and r.saved %}<br>Contributing to the anonymous distribution is optional and currently <b>off</b> for this result.{% endif %}
+</p>

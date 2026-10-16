@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-intro section-shell compact-intro">
+  <div class="eyebrow"><span class="eyebrow-dot"></span> COLOR STUDY · {{ r.id[:8] }} · {{ r.created_at|datefmt }}</div>
+  <h1>{% if r.name %}{{ r.name }}{% if is_owner %}, your approximate{% else %}'s approximate{% endif %}{% else %}{% if is_owner %}Your approximate{% else %}An approximate{% endif %}{% endif %} <em>color reading.</em></h1>
+  <p>An estimate from one photo, shaped by lighting, exposure and your camera. It describes the photo, not a fixed fact about you.</p>
+</section>
+
+<section class="section-shell result-layout">
+  <div class="card">
+    <h2>Sampled color</h2>
+    <div class="sample-swatch" style="background:{{ r.hex }}" role="img" aria-label="Sampled color {{ r.hex }}"><span>{{ r.hex }}</span></div>
+    <div class="key-facts">
+      <div class="fact"><small>Shade band</small><b>{{ r.shade_label }}</b>{% if r.shade_alternative %}<p>Close to the boundary with “{{ r.shade_alternative }}”.</p>{% endif %}</div>
+      <div class="fact"><small>Undertone</small><b>{{ r.undertone_label }}</b><p>{{ r.undertone_note }}</p></div>
+    </div>
+    <p class="fine-print">Shade bands use the Individual Typology Angle, a dermatology measure defined for calibrated instruments. In a phone photo it is only a coarse label.</p>
+  </div>
+
+  <div class="stack">
+    <div class="card">
+      <h2>Reliability: {{ r.confidence_label }} <span class="muted">({{ r.confidence|pct }})</span></h2>
+      <div class="meter" role="img" aria-label="Reliability {{ r.confidence|pct }}"><i style="width:{{ (r.confidence * 100)|round|int }}%"></i></div>
+      <p class="fine-print">This reflects how consistent and well-lit the sampled patch looked. It is not an accuracy rate against your real skin, which this app cannot measure.</p>
+      <ul class="factor-list">
+        {% for f in r.factors %}
+        <li><div class="factor-head"><span>{{ f.label }}</span><span>{{ (f.score * 100)|round|int }}%</span></div><div class="meter small"><i style="width:{{ (f.score * 100)|round|int }}%"></i></div><small>{{ f.note }}</small></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Measured values</h2>
+      <table class="value-table">
+        <tr><th scope="row">sRGB</th><td>{{ r.r }}, {{ r.g }}, {{ r.b }}</td></tr>
+        <tr><th scope="row">HEX</th><td>{{ r.hex }}</td></tr>
+        <tr><th scope="row">CIELAB (D65)</th><td>L* {{ '%.1f'|format(r.lab_l) }} · a* {{ '%.1f'|format(r.lab_a) }} · b* {{ '%.1f'|format(r.lab_b) }}</td></tr>
+        <tr><th scope="row">LCh</th><td>C* {{ '%.1f'|format(r.lch_c) }} · h° {{ '%.0f'|format(r.lch_h) }}</td></tr>
+        <tr><th scope="row">ITA°</th><td>{{ '%.1f'|format(r.ita) }}</td></tr>
+        <tr><th scope="row">Pixels sampled</th><td>{{ r.n_samples }}{% if r.region_method == 'skin_mask' %} · {{ r.skin_fraction|pct }} of crop detected as skin{% else %} · crop used as-is{% endif %}</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section-shell" style="margin-bottom:18px"><div class="card">
+  <h2>Skin tone score: {{ '%g'|format(score) }} <span class="muted">/ 100</span></h2>
+  <p class="score-line">{{ r.name or ('You' if is_owner else 'This sample') }} scored <b>{{ '%g'|format(score) }}</b> on a scale where 1 is the darkest tone and 100 is the lightest. That puts the sampled tone at about the <b>{{ pct_ordinal }} percentile</b>: lighter than roughly {{ '%.0f'|format(pct) }}% of the reference curve and darker than the remaining {{ '%.0f'|format(100 - pct) }}%.</p>
+  {{ curve }}
+  <p class="fine-print">The score only measures how light or dark the sampled patch is (CIELAB L*, rescaled to 1–100); it is not a rating of anyone. The curve is a reference normal distribution (mean {{ '%g'|format(score_mean) }}, standard deviation {{ '%g'|format(score_sd) }}) chosen as an assumption, not measured population data, so the percentile is relative to that curve only.</p>
+</div></section>
+
+{% if r.warnings %}
+<section class="section-shell"><div class="card warn-card"><h2>Things that may affect this result</h2>
+  <ul class="warn-list">{% for w in r.warnings %}<li>{{ w.message }}</li>{% endfor %}</ul></div></section>
+{% endif %}
+
+<section class="section-shell" style="margin-top:18px"><div class="card">
+  <h2>Colors to explore</h2>
+  <div class="palette-grid">
+    {% for sw in r.palette %}
+    <div class="pal" style="background:{{ sw.hex }};color:{{ sw.text }}"><b>{{ sw.name }}</b><span>{{ sw.hex }}</span></div>
+    {% endfor %}
+  </div>
+  <p class="fine-print">Suggestions generated from color-wheel relationships around the measured hue (CIE LCh). They are starting points, not rules about what suits anyone.</p>
+</div></section>
+
+<section class="section-shell" style="margin-top:18px"><div class="card">
+  <h2>Save, export or delete</h2>
+  <div id="result-actions">{% include "partials/result_actions.html" %}</div>
+</div></section>
+
+<section class="section-shell limits-note">
+  <details><summary>How this estimate was made, and its limits</summary>
+    <p>{{ disclaimer }}</p>
+    <ul class="plain-list">
+      <li>Skin pixels are chosen with a YCrCb + HSV range test, then outliers are trimmed and the median CIELAB color is used (algorithm v{{ r.algorithm_version }}).</li>
+      <li>Undertone comes from the hue angle of that color. Colored light, filters and white balance shift it more than they shift lightness.</li>
+      <li>CIELAB is only approximately perceptually uniform, and assumes standard viewing conditions that a phone photo does not provide.</li>
+      <li>The rules are documented heuristics. They have not been scientifically validated for uncalibrated photos.</li>
+    </ul>
+  </details>
+</section>
+{% endblock %}

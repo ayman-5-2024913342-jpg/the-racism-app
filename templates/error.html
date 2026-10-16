@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="empty-state section-shell">
+  <div class="empty-orbit"><span></span><span></span><span></span></div>
+  <div class="eyebrow">ERROR {{ status_code }}</div>
+  <h1>Something's <em>off.</em></h1>
+  <p>{{ message }}</p>
+  <a class="button button-dark" href="/analyze">Start with a photo <span>↗</span></a>
+</section>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero section-shell">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> A more personal kind of color discovery</div>
+    <h1>Find the colors<br>that feel <em>like you.</em></h1>
+    <p class="hero-lede">A thoughtful starting point for exploring your skin's approximate tone, undertone, and colors to try — using a photo you choose.</p>
+    <div class="hero-actions">
+      <a class="button button-dark" href="/analyze">Upload a photo <span aria-hidden="true">↗</span></a>
+      <a class="button button-light" href="/analyze#camera">Take a photo <span aria-hidden="true">⌁</span></a>
+    </div>
+    <div class="hero-note"><span class="mini-check">✓</span> No account needed to get started <span class="note-separator">·</span> Original images aren't saved by default</div>
+  </div>
+  <div class="hero-art" aria-label="Illustration of a personal color palette">
+    <div class="art-topline"><span>YOUR COLOR NOTES</span><span>№ 001</span></div>
+    <div class="portrait-card">
+      <img src="/static/img/hero.jpeg" alt="Close-up portrait with the face split into a lighter and a darker half, beside a column of skin-tone swatches" width="1600" height="900" fetchpriority="high" decoding="async">
+    </div>
+    <!--div class="portrait-card">
+      <div class="sun-disc"></div>
+      <div class="portrait-hair"></div>
+      <div class="portrait-face"><div class="face-shadow"></div><div class="face-eye eye-left"></div><div class="face-eye eye-right"></div><div class="face-nose"></div><div class="face-mouth"></div></div>
+      <div class="portrait-neck"></div><div class="portrait-shirt"></div>
+      <div class="portrait-caption"><span>COLOR STUDY</span><span>01 / 04</span></div>
+    </div-->
+    <div class="palette-float">
+      <span class="palette-label">A palette to explore</span>
+      <div class="palette-swatches"><i style="--swatch:#d5a17e"></i><i style="--swatch:#a65d46"></i><i style="--swatch:#c8b78e"></i><i style="--swatch:#627b69"></i><i style="--swatch:#303d39"></i></div>
+      <span class="palette-caption">Warm · Earthy · Muted</span>
+    </div>
+    <div class="art-stamp">COLOR<br>IS PERSONAL<span>✳</span></div>
+  </div>
+</section>
+
+<section class="trust-strip">
+  <div><span class="trust-icon">◌</span><span><b>Photo-led</b><small>Uses an image you choose</small></span></div>
+  <div><span class="trust-icon">⌁</span><span><b>Made for curiosity</b><small>Explore, don't compare</small></span></div>
+  <div><span class="trust-icon">◈</span><span><b>Privacy-minded</b><small>Saving is your choice</small></span></div>
+</section>
+
+<section class="section-shell how-section">
+  <div class="section-heading"><div><div class="eyebrow">A SIMPLE THREE-STEP RITUAL</div><h2>From photo to <em>possibility.</em></h2></div><p>No beauty scores. No rigid rules. Just a useful way to begin exploring color.</p></div>
+  <div class="steps-grid">
+    <article class="step-card"><div class="step-number">01 <span>—</span></div><div class="step-illustration photo-illustration"><span class="photo-sun"></span><span class="photo-hill"></span><span class="photo-hill second"></span><span class="photo-frame"></span></div><h3>Choose your photo</h3><p>Pick a clear, unfiltered photo in soft, even daylight.</p></article>
+    <article class="step-card"><div class="step-number">02 <span>—</span></div><div class="step-illustration crop-illustration"><div class="crop-face"></div><span class="crop-corner tl"></span><span class="crop-corner tr"></span><span class="crop-corner bl"></span><span class="crop-corner br"></span></div><h3>Find a skin region</h3><p>Review the crop and choose a suitable area without heavy shadow or makeup.</p></article>
+    <article class="step-card"><div class="step-number">03 <span>—</span></div><div class="step-illustration swatch-illustration"><i></i><i></i><i></i><i></i><i></i><span class="swatch-spark">✳</span></div><h3>Explore your palette</h3><p>See an approximate color reading and a few complementary colors to try.</p></article>
+  </div>
+</section>
+
+<section class="section-shell preview-section">
+  <div class="section-heading"><div><div class="eyebrow">A LOOK AT THE RESULT</div><h2>What you'll <em>see.</em></h2></div><p>Every reading comes with its uncertainty, so you can judge how much weight to give it.</p></div>
+  <div class="result-layout preview-card" aria-label="Sample result, not a real analysis">
+    <div class="card">
+      <div class="sample-swatch" style="background:#D9A98C"><span>#D9A98C</span></div>
+      <div class="key-facts"><div class="fact"><small>Shade band</small><b>Light</b></div><div class="fact"><small>Undertone</small><b>Warm</b></div></div>
+    </div>
+    <div class="card">
+      <span class="badge">SAMPLE · ILLUSTRATIVE VALUES</span>
+      <h2 style="margin-top:12px">Reliability: Moderate</h2>
+      <div class="meter" role="img" aria-label="Sample reliability 62 percent"><i style="width:62%"></i></div>
+      <p class="fine-print">Based on skin coverage, sample size, color consistency, exposure and lighting checks.</p>
+      <div class="palette-grid mini"><span class="pal" style="background:#3F6F8F"></span><span class="pal" style="background:#4F7FA0"></span><span class="pal" style="background:#8A7BB0"></span><span class="pal" style="background:#B08A4F"></span><span class="pal" style="background:#8F8F8F"></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-shell method-section">
+  <div class="section-heading"><div><div class="eyebrow">HOW THE ESTIMATE WORKS</div><h2>Measured, then <em>explained.</em></h2></div><p>A transparent set of rules, not a black box. They are heuristics, not a validated clinical method.</p></div>
+  <ol class="method-list">
+    <li><b>Check the file.</b> The image is validated by its actual content, decoded in memory, and stripped of metadata.</li>
+    <li><b>Find skin pixels.</b> Skin-colored pixels are selected inside your crop; background, deep shadows and clipped highlights are excluded.</li>
+    <li><b>Measure color.</b> The median color is taken in CIELAB. A shade band comes from the Individual Typology Angle, and the undertone from the hue angle.</li>
+    <li><b>Score the evidence.</b> A reliability score reflects coverage, sample size, consistency, exposure, detail and lighting color. Low evidence means an "inconclusive" undertone.</li>
+  </ol>
+</section>
+
+<section class="prep-section">
+  <div class="prep-inner">
+    <div class="prep-copy"><div class="eyebrow">BETTER INPUT, BETTER CONTEXT</div><h2>A little light<br>goes a <em>long way.</em></h2><p>Phone cameras interpret color differently. A few small choices can make your result more useful.</p><a class="text-link" href="/analyze">Prepare your photo <span>→</span></a></div>
+    <div class="prep-list">
+      <div><span class="prep-number">01</span><span><b>Use soft daylight</b><small>Face a window; avoid direct sun and colored lighting.</small></span><span class="prep-symbol">☼</span></div>
+      <div><span class="prep-number">02</span><span><b>Skip filters and flash</b><small>Beauty filters, flash, and strong edits can shift color.</small></span><span class="prep-symbol">◌</span></div>
+      <div><span class="prep-number">03</span><span><b>Choose an even skin area</b><small>Avoid deep shadows, highlights, hair, and background.</small></span><span class="prep-symbol">⌖</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-shell privacy-detail" id="privacy">
+  <div class="privacy-banner"><div class="privacy-icon">✳</div><div><h3>Your photo belongs to you.</h3><p>Photos are analyzed in memory and are never written to disk by this app. HTTPS protects a photo in transit, but it does not make a service private by itself, so here is exactly what happens.</p></div><a href="/analyze" class="button button-outline">Get started <span>↗</span></a></div>
+  <div class="privacy-cols">
+    <div class="card"><h2>Processed, not kept</h2><ul class="plain-list"><li>The uploaded photo and your crop exist in server memory only while they are analyzed.</li><li>Photos are not stored in the database or logged. Logs never contain images or colors.</li><li>Your host or proxy may see standard request metadata such as IP address and timing.</li></ul></div>
+    <div class="card"><h2>Kept only if you save</h2><ul class="plain-list"><li>Computed values: sampled color, shade band, undertone, reliability and a palette, plus the name you enter. <b>Saved results are public</b>: anyone can view them.</li><li>A random browser identifier (hashed on the server) so only your browser can delete your results.</li><li>Unsaved results are deleted automatically after {{ ttl_hours }} hours. You can delete anything, any time, from <a class="text-link" href="/settings">Settings</a>.</li><li>Anonymous contribution to the distribution is <b>off by default</b> and shares only a lightness number.</li></ul></div>
+  </div>
+</section>
+{% endblock %}

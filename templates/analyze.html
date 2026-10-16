@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-intro section-shell compact-intro">
+  <div class="eyebrow"><span class="eyebrow-dot"></span> COLOR STUDY / 01</div>
+  <h1>A photo, then <em>your palette.</em></h1>
+  <p>Choose a clear photo, adjust the crop to frame a suitable skin area, then confirm it. Your image is processed in memory and isn't saved.</p>
+</section>
+
+<noscript><div class="noscript-note">JavaScript is required for photo cropping and analysis. Please enable it and reload.</div></noscript>
+<section class="section-shell workflow-shell">
+  <div class="workflow-main">
+    <div class="workflow-topline">
+      <div class="workflow-steps" aria-label="Workflow steps">
+        <span class="workflow-step current" data-step-indicator="1"><i>1</i> Choose</span>
+        <span class="step-line"></span>
+        <span class="workflow-step" data-step-indicator="2"><i>2</i> Crop</span>
+        <span class="step-line"></span>
+        <span class="workflow-step" data-step-indicator="3"><i>3</i> Confirm</span>
+      </div>
+      <span class="privacy-mini"><span>●</span> Not saved</span>
+    </div>
+
+    <div class="upload-view" id="upload-view">
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose or drop an image">
+        <div class="upload-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V3m0 0L7 8m5-5 5 5M4 15v5h16v-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h2>Choose a photo</h2>
+        <p>Drop an image here, or browse your device.</p>
+        <button class="button button-dark" id="choose-file" type="button">Browse files <span>↗</span></button>
+        <span class="file-spec">JPEG, PNG, or WebP · up to {{ max_upload_mb }} MB</span>
+        <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+      </div>
+      <div class="upload-actions">
+        <div class="action-copy"><span class="action-icon">⌁</span><span><b>Use your camera</b><small>Take a new photo on this device.</small></span></div>
+        <button class="button button-light" id="open-camera" type="button">Open camera</button>
+      </div>
+    </div>
+
+    <div class="editor-view" id="editor-view" hidden>
+      <div class="editor-heading"><div><span class="eyebrow">STEP 02</span><h2>Frame your crop.</h2></div><button type="button" class="text-button" id="replace-image">Choose another</button></div>
+      <p class="editor-hint">Drag to reposition, use the controls to zoom, and keep the selected area clear of hair, background, deep shadows, and bright highlights.</p>
+      <div class="crop-demo" aria-hidden="true">
+        <div class="crop-demo-art"><div class="crop-demo-face"></div><div class="crop-demo-box"></div></div>
+        <p><b>How to crop:</b> start wide, then shrink the box onto a smooth, evenly lit patch of cheek or forehead.</p>
+      </div>
+      <div class="crop-stage"><img id="crop-image" alt="Your selected image ready to crop"></div>
+      <div class="crop-controls">
+        <button class="icon-button" type="button" id="zoom-out" aria-label="Zoom out">−</button>
+        <button class="icon-button" type="button" id="zoom-in" aria-label="Zoom in">+</button>
+        <button class="button button-light reset-button" type="button" id="reset-crop">Reset crop</button>
+        <span class="crop-help">Move · zoom · crop</span>
+      </div>
+      <div class="editor-actions"><button class="button button-light" id="back-to-upload" type="button">Back</button><button class="button button-dark" id="confirm-crop" type="button">Confirm crop <span>→</span></button></div>
+    </div>
+
+    <div class="confirmed-view" id="confirmed-view" hidden>
+      <div class="success-mark">✓</div><span class="eyebrow">CROP CONFIRMED</span><h2>Looking good.</h2>
+      <p id="confirmed-message">Your crop has been checked and safely re-encoded. The image is still not saved.</p>
+      <div class="confirmed-preview"><img id="confirmed-image" alt="Confirmed image crop"></div>
+      <div class="confirmed-meta" id="confirmed-meta"></div>
+      <div class="name-field">
+        <label for="user-name"><b>Your name</b> <span class="muted">(required)</span></label>
+        <input type="text" id="user-name" name="name" maxlength="40" autocomplete="given-name" required placeholder="Enter your name">
+      </div>
+      <div class="analysis-options">
+        <label class="check-row"><input type="checkbox" id="opt-save" {% if save_default %}checked{% endif %}><span><b>Save this result publicly</b><small>Saved results are listed for everyone, with your name and the computed color values (never the photo). Only this browser can delete them. Unsaved results stay private and are deleted after {{ ttl_hours }} hours.</small></span></label>
+        <details id="advanced"><summary>Advanced</summary>
+          <label class="check-row"><input type="checkbox" id="opt-skin"><span><b>Treat my whole crop as skin</b><small>Skips automatic skin detection. Use this if detection fails on your crop; anything in the crop that isn't skin will then affect the result.</small></span></label>
+        </details>
+      </div>
+      <div class="editor-actions"><button class="button button-light" id="edit-again" type="button">Adjust crop</button><button class="button button-dark" id="run-analysis" type="button">Analyze this crop <span>→</span></button></div>
+      <p class="fine-print center"><button class="text-button" id="start-over" type="button">Choose another photo</button></p>
+    </div>
+
+    <div class="status-message" id="status-message" role="status" aria-live="polite" hidden></div>
+  </div>
+
+  <aside class="photo-guidance">
+    <span class="eyebrow">A QUICK PHOTO GUIDE</span>
+    <h2>Keep it <em>natural.</em></h2>
+    <!-- original CSS-drawn guide sample, kept for reference:
+    <div class="guide-sample" aria-hidden="true"><div class="guide-sun"></div><div class="guide-head"></div><div class="guide-neck"></div><div class="guide-shirt"></div><span class="guide-check">✓</span></div>
+    -->
+   <img src="/static/img/heroes.jpeg"
+     alt="Four close-up portraits of the same face, getting progressively darker from left to right"
+     width="1599" height="868" decoding="async"
+     style="display:block; width:90%; max-width:90%; height:auto; margin:0; border-radius:3px; object-fit:contain; background:#e8e1d3;">
+      <!--li><span>01</span><div><b>Soft daylight</b><small>Face a window; avoid direct sun.</small></div></li>
+      <li><span>02</span><div><b>No filters or flash</b><small>Keep colors close to the original.</small></div></li>
+      <li><span>03</span><div><b>Even skin area</b><small>Avoid shadow, hair, and background.</small></div></li-->
+    </ul>
+    <div class="privacy-note"><b>Private by default</b><p>The server checks and re-encodes the image to display it safely. It does not save the original or crop to a database or file.</p></div>
+  </aside>
+</section>
+
+<div class="camera-modal" id="camera-modal" hidden role="dialog" aria-modal="true" aria-labelledby="camera-title">
+  <div class="camera-dialog">
+    <div class="camera-dialog-top"><div><span class="eyebrow">DEVICE CAMERA</span><h2 id="camera-title">Take a photo.</h2></div><button class="icon-button" id="close-camera" aria-label="Close camera" type="button">×</button></div>
+    <video id="camera-video" autoplay playsinline muted></video>
+    <p id="camera-help" class="camera-help">Allow camera access when your browser asks. Camera access generally requires localhost or HTTPS.</p>
+    <div class="camera-buttons"><button class="button button-light" id="cancel-camera" type="button">Cancel</button><button class="button button-dark" id="capture-photo" type="button" disabled>Capture photo</button></div>
+  </div>
+</div>
+{% endblock %}
